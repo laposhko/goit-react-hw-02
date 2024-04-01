@@ -1,0 +1,8 @@
+.feedback {
+  margin-top: 40px;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
