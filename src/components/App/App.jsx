@@ -1,32 +1,45 @@
 import Description from "../Description/Description";
 import Options from "../Options/Options";
 import Feedback from "../Feedback/Feedback";
+import Notification from "../Notification/Notification";
 import { useState } from "react";
 
 export default function App() {
-  const [counts, setCounts] = useState({
-    goodCount: 0,
-    neutralCount: 0,
-    badCount: 0,
-  });
-  function handleGoodFeedback() {
-    setCounts({ ...counts, goodCount: counts.goodCount + 1 });
+  if (!localStorage.getItem("counts")) {
+    localStorage.setItem(
+      "counts",
+      JSON.stringify({
+        good: 0,
+        neutral: 0,
+        bad: 0,
+      })
+    );
   }
-  function handleNeutralFeedback() {
-    setCounts({ ...counts, neutralCount: counts.neutralCount + 1 });
+  const [counts, setCounts] = useState(
+    JSON.parse(localStorage.getItem("counts"))
+  );
+  localStorage.setItem("counts", JSON.stringify(counts));
+  function updateFeedback(feedbackType) {
+    setCounts({ ...counts, [feedbackType]: counts[feedbackType] + 1 });
   }
-  function handleBadFeedback() {
-    setCounts({ ...counts, badCount: counts.badCount + 1 });
+  function resetFeedback() {
+    setCounts({ good: 0, neutral: 0, bad: 0 });
   }
+  let totalFeedback = counts.good + counts.neutral + counts.bad;
+
   return (
     <>
       <Description />
       <Options
-        onGoodClick={handleGoodFeedback}
-        onNeutralClick={handleNeutralFeedback}
-        onBadClick={handleBadFeedback}
+        onClick={updateFeedback}
+        totalFeedback={totalFeedback}
+        resetFeedback={resetFeedback}
       />
-      <Feedback counts={counts} />
+      {totalFeedback == 0 ? (
+        <Notification />
+      ) : (
+        <Feedback counts={counts} totalFeedback={totalFeedback} />
+      )}
     </>
   );
 }
