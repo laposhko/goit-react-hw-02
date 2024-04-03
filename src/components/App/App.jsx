@@ -26,7 +26,7 @@ export default function App() {
     setCounts({ good: 0, neutral: 0, bad: 0 });
   }
   let totalFeedback = counts.good + counts.neutral + counts.bad;
-
+  const stats = ((counts.good / totalFeedback) * 100).toFixed();
   return (
     <>
       <Description />
@@ -38,7 +38,7 @@ export default function App() {
       {totalFeedback == 0 ? (
         <Notification />
       ) : (
-        <Feedback counts={counts} totalFeedback={totalFeedback} />
+        <Feedback counts={counts} totalFeedback={totalFeedback} stats={stats} />
       )}
     </>
   );
